@@ -1,6 +1,7 @@
 import { Navbar } from "@/components/landing/Navbar";
 import { Hero } from "@/components/landing/Hero";
 import { AudienceEntry } from "@/components/landing/AudienceEntry";
+import { Caregivers } from "@/components/landing/Caregivers";
 import { MemoryScroll } from "@/components/landing/MemoryScroll";
 import { CinematicSteps } from "@/components/CinematicSteps";
 import { OurStory } from "@/components/landing/OurStory";
@@ -29,7 +30,10 @@ export default function Home() {
       <Wave fromColor="#080B14" toColor="#FFFFFF" direction="down" />
 
       <AudienceEntry />
-      <Wave fromColor="#FFFFFF" toColor="#0A0F1E" direction="up" />
+      <Wave fromColor="#FFFFFF" toColor="#F7F6F3" direction="up" />
+
+      <Caregivers />
+      <Wave fromColor="#F7F6F3" toColor="#0A0F1E" direction="up" />
 
       <MemoryScroll />
       <Wave fromColor="#0A0F1E" toColor="#F7F6F3" direction="down" />

@@ -13,7 +13,7 @@ export function Navbar() {
   }, []);
 
   const navLinks = [
-    { label: "For families", href: "#patients" },
+    { label: "For families", href: "#caregivers" },
     { label: "For doctors", href: "#doctors" },
     { label: "Our story", href: "/about" },
   ];
@@ -47,13 +47,14 @@ export function Navbar() {
           }}
         >
           <a href="/" style={{ display: "flex", alignItems: "center", textDecoration: "none" }}>
-            <img src="/logo-small.png" alt="ReVerie" style={{ height: "28px", width: "auto" }} />
+            <img src="/logo-small.png" alt="ReVerie" style={{ height: "28px", width: "auto", filter: "brightness(0) invert(1)" }} />
           </a>
 
           <div className="hidden md:flex" style={{ gap: "36px", alignItems: "center" }}>
             {navLinks.map(({ label, href }) => (
               <NavLink key={label} label={label} href={href} />
             ))}
+            <ForEveryoneLink />
           </div>
 
           <a
@@ -119,7 +120,7 @@ export function Navbar() {
           >
             ✕
           </button>
-          {[...navLinks, { label: "Apply as a Doctor", href: "#apply" }].map(({ label, href }) => (
+          {[...navLinks, { label: "For everyone", href: "#entertainment" }, { label: "Apply as a Doctor", href: "#apply" }].map(({ label, href }) => (
             <a
               key={label}
               href={href}
@@ -130,6 +131,9 @@ export function Navbar() {
                 fontWeight: 400,
                 color: "rgba(255,255,255,0.7)",
                 textDecoration: "none",
+                minHeight: "44px",
+                display: "flex",
+                alignItems: "center",
               }}
             >
               {label}
@@ -158,6 +162,31 @@ function NavLink({ label, href }: { label: string; href: string }) {
       onMouseLeave={() => setHovered(false)}
     >
       {label}
+    </a>
+  );
+}
+
+function ForEveryoneLink() {
+  const [hovered, setHovered] = useState(false);
+  return (
+    <a
+      href="#entertainment"
+      style={{
+        fontFamily: "var(--font-dm-sans)",
+        fontSize: "13px",
+        fontWeight: 400,
+        color: hovered ? "#fff" : "rgba(255,255,255,0.6)",
+        textDecoration: "none",
+        border: "0.5px solid rgba(255,255,255,0.15)",
+        borderRadius: "6px",
+        padding: "5px 14px",
+        transition: "color 0.2s, border-color 0.2s",
+        borderColor: hovered ? "rgba(255,255,255,0.35)" : "rgba(255,255,255,0.15)",
+      }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      For everyone
     </a>
   );
 }

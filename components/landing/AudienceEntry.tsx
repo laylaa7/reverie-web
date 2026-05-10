@@ -13,7 +13,7 @@ const rows: Row[] = [
   {
     tag: "Families & patients",
     title: "Give them back what they're losing",
-    href: "#patients",
+    href: "#memory-scroll",
   },
   {
     tag: "Doctors",

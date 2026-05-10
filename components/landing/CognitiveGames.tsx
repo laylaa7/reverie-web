@@ -48,8 +48,15 @@ const activities = [
 
 export function CognitiveGames() {
   return (
-    <section style={{ background: "var(--rv-offwhite)", padding: "100px 80px" }}>
-      <div className="grid md:grid-cols-2" style={{ gap: "80px", alignItems: "center" }}>
+    <section className="games-section" style={{ background: "var(--rv-offwhite)", padding: "100px 80px" }}>
+      <style>{`
+        @media (max-width: 767px) {
+          .games-section { padding: 60px 24px !important; }
+          .games-grid { grid-template-columns: 1fr !important; gap: 48px !important; }
+          .games-iphone { max-width: 280px !important; margin: 0 auto !important; }
+        }
+      `}</style>
+      <div className="games-grid grid md:grid-cols-2" style={{ gap: "80px", alignItems: "center" }}>
         <div style={{ display: "flex", flexDirection: "column", gap: "28px" }}>
           <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
             <span
@@ -129,7 +136,7 @@ export function CognitiveGames() {
         </div>
 
         {/* iPhone widget */}
-        <div style={{ display: "flex", justifyContent: "center" }}>
+        <div className="games-iphone" style={{ display: "flex", justifyContent: "center" }}>
           <div
             style={{
               width: "260px",

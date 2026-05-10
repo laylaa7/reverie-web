@@ -20,7 +20,13 @@ const scenes = [
 
 export function Entertainment() {
   return (
-    <section id="entertainment" style={{ background: "var(--rv-navy)", padding: "100px 80px" }}>
+    <section id="entertainment" className="entertainment-section" style={{ background: "var(--rv-navy)", padding: "100px 80px" }}>
+      <style>{`
+        @media (max-width: 767px) {
+          .entertainment-section { padding: 60px 24px !important; }
+          .entertainment-cta { margin-top: 48px !important; }
+        }
+      `}</style>
       <p
         style={{
           fontFamily: "var(--font-dm-sans)",
@@ -129,7 +135,7 @@ export function Entertainment() {
       </div>
 
       {/* CTA */}
-      <div style={{ marginTop: "80px", textAlign: "center" }}>
+      <div className="entertainment-cta" style={{ marginTop: "80px", textAlign: "center" }}>
         <p
           style={{
             fontFamily: "var(--font-playfair)",

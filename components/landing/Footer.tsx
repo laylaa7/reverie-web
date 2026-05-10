@@ -18,18 +18,38 @@ const legalLinks = [
 export function Footer() {
   return (
     <footer
+      className="footer-outer"
       style={{
         background: "var(--rv-black)",
         borderTop: "0.5px solid rgba(255,255,255,0.06)",
         padding: "64px 80px",
       }}
     >
+      <style>{`
+        @media (max-width: 767px) {
+          .footer-outer { padding: 48px 24px !important; }
+          .footer-grid { grid-template-columns: 1fr !important; gap: 40px !important; }
+          .footer-logo { height: 48px !important; }
+          .footer-bottom { flex-direction: column !important; gap: 8px !important; }
+        }
+      `}</style>
       <div
-        className="grid grid-cols-2 md:grid-cols-4"
+        className="footer-grid grid grid-cols-2 md:grid-cols-4"
         style={{ gap: "48px", maxWidth: "1280px", margin: "0 auto" }}
       >
-        <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-          <img src="/logo-large.jpg" alt="ReVerie" style={{ height: "56px", width: "auto", maxWidth: "180px", objectFit: "contain", display: "block", marginBottom: "20px" }} />
+        <div style={{ display: "flex", flexDirection: "column", gap: "12px", minWidth: "220px", maxWidth: "300px" }}>
+          <img
+            src="/logo-large.png"
+            alt="ReVerie"
+            style={{
+              height: '72px',
+              width: 'auto',
+              maxWidth: '240px',
+              objectFit: 'contain',
+              display: 'block',
+              marginBottom: '20px',
+            }}
+          />
           {/* <p
             style={{
               fontFamily: "var(--font-playfair)",
@@ -107,6 +127,7 @@ export function Footer() {
       </div>
 
       <div
+        className="footer-bottom"
         style={{
           borderTop: "0.5px solid rgba(255,255,255,0.05)",
           marginTop: "48px",

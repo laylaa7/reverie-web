@@ -1,21 +1,26 @@
 "use client";
 
 import { useRef, useEffect } from "react";
+import { useIsMobile } from "@/hooks/useIsMobile";
 
-const memories = [
-  { title: "Her grandmother's kitchen", location: "Alexandria · 1974", width: 380, height: 420, rotate: -2.5, image: "/MemoryScroll/memory1.JPG" },
-  { title: "The old garden", location: "Maadi · summer", width: 220, height: 260, rotate: 1.8, image: "/MemoryScroll/memory2.jpg" },
-  { title: "His workshop", location: "Every Saturday", width: 300, height: 360, rotate: -1.2, image: "/MemoryScroll/memory3.jpg" },
-  { title: "The street we grew up on", location: "Heliopolis · 1980s", width: 340, height: 400, rotate: 2.1,image: "/MemoryScroll/memory4.jpg" },
-  { title: "The first home", location: "Cairo · 1992", width: 260, height: 300, rotate: -1.8, image: "/MemoryScroll/memory5.jpg" },
-  { title: "The sea at dusk", location: "Alexandria", width: 200, height: 240, rotate: 1.4, image: "/MemoryScroll/memory6.jpg" },
+type Memory = { title: string; location: string; width: number; height: number; rotate: number; image?: string; color?: string };
+
+const memories: Memory[] = [
+  { title: "The mountain we climbed together", location: "Sinai · dawn", width: 380, height: 420, rotate: -2.5, image: "/memoryscroll/memory1.JPG" },
+  { title: "The old garden", location: "Cairo · childhood", width: 220, height: 260, rotate: 1.8, image: "/memoryscroll/memory2.jpg" },
+  { title: "A day we still talk about", location: "Every Saturday", width: 300, height: 360, rotate: -1.2, image: "/memoryscroll/memory3.jpg" },
+  { title: "The street we grew up on", location: "Heliopolis · 2000", width: 340, height: 400, rotate: 2.1, image: "/memoryscroll/memory4.jpg" },
+  { title: "laughs", location: "Cairo · 2006", width: 260, height: 300, rotate: -1.8,image: "/memoryscroll/memory5.jpg"},
+  { title: "first group trip", location: "siwa", width: 200, height: 240, rotate: 1.4, image: "/memoryscroll/memory6.jpg" },
 ];
 
 export function MemoryScroll() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const stripRef = useRef<HTMLDivElement>(null);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
+    if (isMobile) return;
     let rafId: number;
 
     const handleScroll = () => {
@@ -43,10 +48,85 @@ export function MemoryScroll() {
       window.removeEventListener("scroll", handleScroll);
       cancelAnimationFrame(rafId);
     };
-  }, []);
+  }, [isMobile]);
+
+  if (isMobile) {
+    return (
+      <section id="memory-scroll" style={{ background: "#0A0F1E", padding: "60px 24px" }}>
+        <div style={{ marginBottom: "40px" }}>
+          <p style={{
+            fontSize: "11px",
+            letterSpacing: "2px",
+            textTransform: "uppercase",
+            color: "rgba(255,255,255,0.2)",
+            fontFamily: "var(--font-dm-sans)",
+            fontWeight: 400,
+            margin: "0 0 12px 0",
+          }}>
+            Every memory has a place. We build it back.
+          </p>
+          <h2 style={{
+            fontFamily: "var(--font-playfair)",
+            fontSize: "clamp(24px, 7vw, 36px)",
+            lineHeight: 1.2,
+            margin: 0,
+            color: "rgba(255,255,255,0.6)",
+            fontStyle: "italic",
+            fontWeight: 400,
+          }}>
+            <strong style={{ fontStyle: "normal", color: "#fff", fontWeight: 700 }}>Her kitchen.</strong>
+            {" "}The street you grew up on.
+            <br />
+            <strong style={{ fontStyle: "normal", color: "#fff", fontWeight: 700 }}>His workshop.</strong>
+            {" "}Every Saturday morning.
+          </h2>
+        </div>
+
+        <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+          {memories.map((mem, i) => (
+            <div key={i} style={{
+              width: "100%",
+              height: "200px",
+              background: mem.color || "#0d1530",
+              borderRadius: "8px",
+              overflow: "hidden",
+              position: "relative",
+              border: "0.5px solid rgba(255,255,255,0.06)",
+            }}>
+              {mem.image && (
+                <img src={mem.image} alt={mem.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+              )}
+              <div style={{
+                position: "absolute",
+                bottom: 0, left: 0, right: 0,
+                height: "50%",
+                background: "linear-gradient(to top, rgba(0,0,0,0.7), transparent)",
+              }} />
+              <div style={{ position: "absolute", bottom: "16px", left: "16px" }}>
+                <p style={{
+                  fontFamily: "var(--font-dm-sans)",
+                  fontSize: "14px", fontWeight: 500,
+                  color: "#fff", margin: "0 0 2px",
+                }}>{mem.title}</p>
+                <p style={{
+                  fontFamily: "var(--font-dm-mono)",
+                  fontSize: "9px",
+                  color: "rgba(255,255,255,0.4)",
+                  letterSpacing: "1px",
+                  textTransform: "uppercase",
+                  margin: 0,
+                }}>{mem.location}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section
+      id="memory-scroll"
       ref={sectionRef}
       style={{
         height: "300vh",
@@ -118,7 +198,7 @@ export function MemoryScroll() {
                 flexShrink: 0,
                 width: `${mem.width}px`,
                 height: `${mem.height}px`,
-                background: mem.image ? "transparent" : "#1a1a2e",
+                background: mem.image ? "transparent" : (mem.color || "#1a1a2e"),
                 border: "0.5px solid rgba(255,255,255,0.06)",
                 borderRadius: "4px",
                 transform: `rotate(${mem.rotate}deg)`,

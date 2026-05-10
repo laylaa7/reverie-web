@@ -43,9 +43,14 @@ export function ForDoctors() {
     >
       <style>{`
         @media (max-width: 767px) {
+          .doctors-header { padding: 60px 24px 0 !important; }
+          .doctors-features-grid { gap: 0 !important; }
+          .doctors-feature-row { padding: 20px 16px !important; gap: 16px !important; }
+          .doctors-feature-num { font-size: 36px !important; min-width: 48px !important; }
+          .doctors-clinics { padding: 40px 24px !important; }
+          .doctors-clinics-grid { grid-template-columns: 1fr !important; gap: 32px !important; }
           .doctors-join-layout { flex-direction: column !important; }
-          .doctors-join-right { min-height: 280px !important; flex: none !important; }
-          .doctors-join-img { object-position: center 20% !important; }
+          .doctors-join-right { display: none !important; }
           .doctors-join-left { padding: 60px 24px !important; }
         }
       `}</style>
@@ -53,7 +58,7 @@ export function ForDoctors() {
       <OrganicBackground />
 
       {/* Header + features */}
-      <div style={{ position: "relative", zIndex: 1, padding: "100px 80px 0" }}>
+      <div className="doctors-header" style={{ position: "relative", zIndex: 1, padding: "100px 80px 0" }}>
         <p
           style={{
             fontFamily: "var(--font-dm-sans)",
@@ -119,8 +124,8 @@ export function ForDoctors() {
       </div>
 
       {/* Clinics & Hospitals */}
-      <div style={{ background: "#FAFAFA", padding: "80px 80px" }}>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "64px", alignItems: "center", maxWidth: "1100px" }}>
+      <div className="doctors-clinics" style={{ background: "#FAFAFA", padding: "80px 80px" }}>
+        <div className="doctors-clinics-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "64px", alignItems: "center", maxWidth: "1100px" }}>
           <div>
             <p style={{ fontFamily: "var(--font-dm-sans)", fontSize: "11px", fontWeight: 400, textTransform: "uppercase", letterSpacing: "2px", color: "rgba(0,0,0,0.3)", margin: "0 0 16px 0" }}>
               For institutions

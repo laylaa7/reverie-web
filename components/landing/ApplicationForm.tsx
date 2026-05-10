@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
+import { useIsMobile } from "@/hooks/useIsMobile";
 
 const rightPanelBenefits = [
   "Paid per session you run",
@@ -13,6 +14,7 @@ export function ApplicationForm() {
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
   const formRef = useRef<HTMLFormElement>(null);
+  const isMobile = useIsMobile();
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -43,12 +45,11 @@ export function ApplicationForm() {
       style={{
         background: "#FFFFFF",
         display: "grid",
-        gridTemplateColumns: "1fr 1fr",
+        gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
       }}
-      className="flex-col md:grid"
     >
       {/* Left — form */}
-      <div style={{ padding: "100px 80px" }}>
+      <div style={{ padding: isMobile ? "40px 20px" : "100px 80px" }}>
         <p
           style={{
             fontFamily: "var(--font-dm-sans)",
@@ -237,7 +238,7 @@ export function ApplicationForm() {
         style={{
           background: "#080B14",
           padding: "80px 60px",
-          display: "flex",
+          display: isMobile ? "none" : "flex",
           flexDirection: "column",
           justifyContent: "center",
           minHeight: "100%",
