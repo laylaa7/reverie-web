@@ -55,7 +55,7 @@ export default async function ApplicationsPage() {
     <div style={{ display: 'flex', minHeight: '100vh', background: colors.bg, fontFamily: 'DM Sans, sans-serif' }}>
       <AdminSidebar currentPath="/admin/applications" theme={theme} />
 
-      <main style={{ flex: 1, padding: '48px' }}>
+      <main className="admin-main" style={{ flex: 1, padding: '48px' }}>
 
         {/* Header */}
         <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '32px' }}>

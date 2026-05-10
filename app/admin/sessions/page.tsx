@@ -2,7 +2,7 @@ import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { createClient } from '@supabase/supabase-js'
 import AdminSidebar from '@/components/admin/AdminSidebar'
-import { SessionsTableClient } from '@/components/admin/SessionsTableClient'
+import { SessionsTable } from '@/components/admin/SessionsTable'
 
 export default async function SessionsPage() {
   const cookieStore = cookies()
@@ -68,7 +68,7 @@ export default async function SessionsPage() {
     <div style={{ display: 'flex', background: 'var(--bg)', minHeight: '100vh', fontFamily: 'DM Sans, sans-serif' }}>
       <AdminSidebar currentPath="/admin/sessions" />
 
-      <main style={{ flex: 1, overflow: 'auto', padding: '48px' }}>
+      <main className="admin-main" style={{ flex: 1, overflow: 'auto', padding: '48px' }}>
         <h1 style={{ fontFamily: 'Playfair Display, serif', fontSize: '28px', fontWeight: 700, color: 'var(--text)', margin: '0 0 4px' }}>
           Sessions
         </h1>
@@ -95,7 +95,7 @@ export default async function SessionsPage() {
           ))}
         </div>
 
-        <SessionsTableClient sessions={sessions} />
+        <SessionsTable sessions={sessions} />
       </main>
     </div>
   )

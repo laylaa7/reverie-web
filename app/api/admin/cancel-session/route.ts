@@ -2,11 +2,7 @@ import { createClient } from '@supabase/supabase-js'
 import { NextResponse } from 'next/server'
 
 export async function POST(req: Request) {
-  const { title, body, target_role } = await req.json()
-
-  if (!title?.trim() || !body?.trim()) {
-    return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
-  }
+  const { sessionId, reason } = await req.json()
 
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -14,13 +10,12 @@ export async function POST(req: Request) {
   )
 
   const { error } = await supabase
-    .from('notifications')
-    .insert({
-      title: title.trim(),
-      body: body.trim(),
-      target_role: target_role ?? 'all',
-      created_at: new Date().toISOString(),
+    .from('appointments')
+    .update({
+      status: 'cancelled',
+      cancellation_reason: reason || 'Cancelled by admin',
     })
+    .eq('id', sessionId)
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 })

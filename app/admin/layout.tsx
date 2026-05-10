@@ -25,6 +25,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           --text2: rgba(0,0,0,0.5);
           --text3: rgba(0,0,0,0.3);
         }
+        @media (max-width: 767px) {
+          .admin-main { padding: 64px 20px 24px !important; }
+          .admin-stat-grid { grid-template-columns: repeat(2, 1fr) !important; }
+          .admin-chart-grid { grid-template-columns: 1fr !important; }
+        }
       ` }} />
       {children}
     </div>

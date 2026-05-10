@@ -54,7 +54,7 @@ export default async function AdminsPage() {
     <div style={{ display: 'flex', background: 'var(--bg)', minHeight: '100vh', fontFamily: 'DM Sans, sans-serif' }}>
       <AdminSidebar currentPath="/admin/admins" />
 
-      <main style={{ flex: 1, overflow: 'auto', padding: '48px' }}>
+      <main className="admin-main" style={{ flex: 1, overflow: 'auto', padding: '48px' }}>
         <h1 style={{ fontFamily: 'Playfair Display, serif', fontSize: '28px', fontWeight: 700, color: 'var(--text)', margin: '0 0 4px' }}>
           Admins
         </h1>

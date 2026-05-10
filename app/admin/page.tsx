@@ -99,7 +99,7 @@ export default async function AdminDashboard() {
     <div style={{ display: 'flex', background: 'var(--bg)', minHeight: '100vh', fontFamily: 'DM Sans, sans-serif' }}>
       <AdminSidebar currentPath="/admin" />
 
-      <main style={{ flex: 1, overflow: 'auto', padding: '48px' }}>
+      <main className="admin-main" style={{ flex: 1, overflow: 'auto', padding: '48px' }}>
         {/* Header */}
         <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '0' }}>
           <div>

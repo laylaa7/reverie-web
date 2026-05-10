@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import UserEditModal from './UserEditModal'
 
 interface Consumer {
   id: string
@@ -21,13 +22,16 @@ interface Consumer {
 interface Props {
   consumers: Consumer[]
   colors: any
+  currentUserId: string
 }
 
-export default function ConsumersTable({ consumers, colors }: Props) {
+export default function ConsumersTable({ consumers, colors, currentUserId }: Props) {
   const [filter, setFilter] = useState('all')
   const [search, setSearch] = useState('')
   const [sort, setSort] = useState('newest')
   const [showRemoved, setShowRemoved] = useState(false)
+  const [editingUser, setEditingUser] = useState<any | null>(null)
+  const [showUserModal, setShowUserModal] = useState(false)
 
   const filtered = consumers
     .filter(u => {
@@ -44,10 +48,14 @@ export default function ConsumersTable({ consumers, colors }: Props) {
 
       const matchFilter =
         filter === 'all' ? true
-        : filter === 'patients'
+        : filter === 'patient'
           ? u.profile?.consumer_type === 'patient'
         : filter === 'entertainment'
           ? u.profile?.consumer_type === 'entertainment'
+        : filter === 'doctor'
+          ? u.role === 'doctor'
+        : filter === 'admin'
+          ? u.role === 'admin'
         : true
 
       return matchSearch && matchFilter
@@ -74,8 +82,11 @@ export default function ConsumersTable({ consumers, colors }: Props) {
     return 'Moderate'
   }
 
-  async function handleRemove(userId: string) {
-    if (!confirm('Remove this user? They will lose access but their data will be preserved.')) return
+  async function handleRemove(userId: string, isAdmin: boolean) {
+    const msg = isAdmin
+      ? 'This will remove admin access. Are you sure?'
+      : 'Remove this user? They will lose access but their data will be preserved.'
+    if (!confirm(msg)) return
     const res = await fetch('/api/admin/remove-consumer', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -174,8 +185,10 @@ export default function ConsumersTable({ consumers, colors }: Props) {
       <div style={{ display: 'flex', gap: '8px', marginBottom: '20px' }}>
         {[
           { key: 'all', label: 'All' },
-          { key: 'patients', label: 'Patients' },
+          { key: 'patient', label: 'Patients' },
           { key: 'entertainment', label: 'Entertainment' },
+          { key: 'doctor', label: 'Doctors' },
+          { key: 'admin', label: 'Admins' },
         ].map(f => (
           <button
             key={f.key}
@@ -195,11 +208,34 @@ export default function ConsumersTable({ consumers, colors }: Props) {
             <span style={{ marginLeft: '6px', fontFamily: 'DM Mono, monospace', fontSize: '10px', opacity: 0.6 }}>
               {f.key === 'all'
                 ? activeCons.length
-                : activeCons.filter(u => u.profile?.consumer_type === f.key).length}
+                : f.key === 'patient'
+                ? activeCons.filter(u => u.profile?.consumer_type === 'patient').length
+                : f.key === 'entertainment'
+                ? activeCons.filter(u => u.profile?.consumer_type === 'entertainment').length
+                : f.key === 'doctor'
+                ? activeCons.filter(u => u.role === 'doctor').length
+                : f.key === 'admin'
+                ? activeCons.filter(u => u.role === 'admin').length
+                : 0}
             </span>
           </button>
         ))}
       </div>
+
+      {/* Admin filter note */}
+      {filter === 'admin' && (
+        <div style={{
+          marginBottom: '16px', padding: '10px 14px', borderRadius: '6px',
+          background: 'rgba(232,160,48,0.06)', border: '0.5px solid rgba(232,160,48,0.2)',
+          fontFamily: 'DM Mono, monospace', fontSize: '10px', color: 'rgba(232,160,48,0.8)',
+          letterSpacing: '0.5px',
+        }}>
+          Admin accounts are read-only here. To manage admin access, visit{' '}
+          <a href="/admin/admins" style={{ color: 'rgba(232,160,48,0.9)', textDecoration: 'underline' }}>
+            /admin/admins
+          </a>.
+        </div>
+      )}
 
       {/* Empty state */}
       {filtered.length === 0 && (
@@ -211,9 +247,34 @@ export default function ConsumersTable({ consumers, colors }: Props) {
       {/* User rows */}
       {filtered.map(user => {
         const isPatient = user.profile?.consumer_type === 'patient'
+        const isDoctor = user.role === 'doctor'
+        const isAdmin = user.role === 'admin'
         const score = user.profile?.cognitive_score ?? null
         const initials = (user.full_name ?? 'U').split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
         const isRemoved = user.is_active === false
+
+        const roleColor =
+          isPatient ? 'rgba(107,138,255,0.8)'
+          : isDoctor ? 'rgba(80,200,120,0.9)'
+          : isAdmin  ? 'rgba(232,160,48,0.9)'
+          : 'rgba(160,80,255,0.8)'
+
+        const roleBg =
+          isPatient ? 'rgba(107,138,255,0.08)'
+          : isDoctor ? 'rgba(80,200,120,0.08)'
+          : isAdmin  ? 'rgba(232,160,48,0.08)'
+          : 'rgba(160,80,255,0.08)'
+
+        const roleBorder =
+          isPatient ? 'rgba(107,138,255,0.2)'
+          : isDoctor ? 'rgba(80,200,120,0.2)'
+          : isAdmin  ? 'rgba(232,160,48,0.2)'
+          : 'rgba(160,80,255,0.2)'
+
+        const roleLabel =
+          isDoctor ? 'doctor'
+          : isAdmin  ? 'admin'
+          : user.profile?.consumer_type ?? 'unknown'
 
         return (
           <div key={user.id} style={{
@@ -230,11 +291,11 @@ export default function ConsumersTable({ consumers, colors }: Props) {
             {/* Avatar */}
             <div style={{
               width: '40px', height: '40px', borderRadius: '50%', flexShrink: 0,
-              background: isPatient ? 'rgba(107,138,255,0.12)' : 'rgba(160,80,255,0.12)',
-              border: `0.5px solid ${isPatient ? 'rgba(107,138,255,0.2)' : 'rgba(160,80,255,0.2)'}`,
+              background: roleBg,
+              border: `0.5px solid ${roleBorder}`,
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               fontFamily: 'DM Mono, monospace', fontSize: '12px',
-              color: isPatient ? 'rgba(107,138,255,0.8)' : 'rgba(160,80,255,0.8)',
+              color: roleColor,
             }}>
               {initials}
             </div>
@@ -248,11 +309,11 @@ export default function ConsumersTable({ consumers, colors }: Props) {
                 <span style={{
                   fontSize: '9px', padding: '2px 8px', borderRadius: '100px',
                   fontFamily: 'DM Mono, monospace', letterSpacing: '0.5px',
-                  background: isPatient ? 'rgba(107,138,255,0.08)' : 'rgba(160,80,255,0.08)',
-                  color: isPatient ? 'rgba(107,138,255,0.8)' : 'rgba(160,80,255,0.8)',
-                  border: `0.5px solid ${isPatient ? 'rgba(107,138,255,0.2)' : 'rgba(160,80,255,0.2)'}`,
+                  background: roleBg,
+                  color: roleColor,
+                  border: `0.5px solid ${roleBorder}`,
                 }}>
-                  {user.profile?.consumer_type ?? 'unknown'}
+                  {roleLabel}
                 </span>
               </div>
               <p style={{ fontFamily: 'DM Mono, monospace', fontSize: '10px', color: colors.text3, margin: 0 }}>
@@ -284,35 +345,63 @@ export default function ConsumersTable({ consumers, colors }: Props) {
               </p>
             </div>
 
-            {/* Remove / Restore */}
-            {isRemoved ? (
-              <button
-                onClick={() => handleRestore(user.id)}
-                style={{
-                  padding: '5px 12px', borderRadius: '5px',
-                  background: 'rgba(80,200,120,0.06)', border: '0.5px solid rgba(80,200,120,0.2)',
-                  color: 'rgba(80,200,120,0.7)', fontSize: '11px',
-                  fontFamily: 'DM Sans, sans-serif', cursor: 'pointer', flexShrink: 0,
-                }}
-              >
-                Restore
-              </button>
-            ) : (
-              <button
-                onClick={() => handleRemove(user.id)}
-                style={{
-                  padding: '5px 12px', borderRadius: '5px',
-                  background: 'rgba(255,100,100,0.06)', border: '0.5px solid rgba(255,100,100,0.15)',
-                  color: 'rgba(255,100,100,0.6)', fontSize: '11px',
-                  fontFamily: 'DM Sans, sans-serif', cursor: 'pointer', flexShrink: 0,
-                }}
-              >
-                Remove
-              </button>
-            )}
+            {/* Actions */}
+            <div style={{ display: 'flex', gap: '6px', flexShrink: 0 }}>
+              {/* Edit — hidden for other admins */}
+              {(user.role !== 'admin' || user.id === currentUserId) && !isRemoved && (
+                <button
+                  onClick={() => { setEditingUser(user); setShowUserModal(true) }}
+                  style={{
+                    padding: '5px 12px', borderRadius: '5px',
+                    background: 'rgba(107,138,255,0.08)', border: '0.5px solid rgba(107,138,255,0.2)',
+                    color: 'rgba(107,138,255,0.7)', fontSize: '11px',
+                    fontFamily: 'DM Sans, sans-serif', cursor: 'pointer',
+                  }}
+                >
+                  Edit
+                </button>
+              )}
+
+              {/* Remove / Restore */}
+              {isRemoved ? (
+                <button
+                  onClick={() => handleRestore(user.id)}
+                  style={{
+                    padding: '5px 12px', borderRadius: '5px',
+                    background: 'rgba(80,200,120,0.06)', border: '0.5px solid rgba(80,200,120,0.2)',
+                    color: 'rgba(80,200,120,0.7)', fontSize: '11px',
+                    fontFamily: 'DM Sans, sans-serif', cursor: 'pointer',
+                  }}
+                >
+                  Restore
+                </button>
+              ) : (
+                (user.role !== 'admin' || user.id === currentUserId) && user.id !== currentUserId && (
+                  <button
+                    onClick={() => handleRemove(user.id, isAdmin)}
+                    style={{
+                      padding: '5px 12px', borderRadius: '5px',
+                      background: 'rgba(255,100,100,0.06)', border: '0.5px solid rgba(255,100,100,0.15)',
+                      color: 'rgba(255,100,100,0.6)', fontSize: '11px',
+                      fontFamily: 'DM Sans, sans-serif', cursor: 'pointer',
+                    }}
+                  >
+                    Remove
+                  </button>
+                )
+              )}
+            </div>
           </div>
         )
       })}
+
+      {showUserModal && editingUser && (
+        <UserEditModal
+          user={editingUser}
+          colors={colors}
+          onClose={() => { setShowUserModal(false); setEditingUser(null) }}
+        />
+      )}
     </div>
   )
 }

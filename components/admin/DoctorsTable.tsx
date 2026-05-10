@@ -1,121 +1,121 @@
-"use client";
+'use client'
 
-import { useEffect, useState, useCallback } from "react";
-import { createClient } from "@/lib/supabase/client";
-import { Badge } from "@/components/ui/badge";
-import type { DoctorProfile } from "@/lib/types";
+import { useState } from 'react'
+import DoctorEditModal from './DoctorEditModal'
 
-type VerificationStatus = "pending" | "verified" | "rejected";
+const statusColors: Record<string, { bg: string; color: string; border: string }> = {
+  pending:  { bg: 'rgba(232,160,48,0.1)',  color: 'rgba(232,160,48,0.8)',  border: 'rgba(232,160,48,0.2)' },
+  verified: { bg: 'rgba(80,200,120,0.1)',  color: 'rgba(80,200,120,0.8)',  border: 'rgba(80,200,120,0.2)' },
+  rejected: { bg: 'rgba(255,100,100,0.1)', color: 'rgba(255,100,100,0.8)', border: 'rgba(255,100,100,0.2)' },
+}
 
-const STATUS_CYCLE: Record<VerificationStatus, VerificationStatus> = {
-  pending: "verified",
-  verified: "rejected",
-  rejected: "pending",
-};
+const colStyle = {
+  fontFamily: 'DM Mono, monospace', fontSize: '7px',
+  color: 'var(--text3)', textTransform: 'uppercase' as const, letterSpacing: '2px',
+}
 
-export function DoctorsTable() {
-  const [doctors, setDoctors] = useState<DoctorProfile[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [toggling, setToggling] = useState<string | null>(null);
-  const supabase = createClient();
+const cellStyle: React.CSSProperties = {
+  fontFamily: 'DM Sans, sans-serif', fontSize: '13px',
+  color: 'var(--text)', padding: '14px 0', alignSelf: 'center',
+}
 
-  const fetchDoctors = useCallback(async () => {
-    setLoading(true);
-    const { data } = await supabase
-      .from("doctor_profiles")
-      .select("*")
-      .order("created_at", { ascending: false });
-    setDoctors(data ?? []);
-    setLoading(false);
-  }, [supabase]);
+interface Props {
+  doctors: any[]
+  colors: any
+  toggleVerification: (formData: FormData) => Promise<void>
+}
 
-  useEffect(() => {
-    fetchDoctors();
-  }, [fetchDoctors]);
+export default function DoctorsTable({ doctors, colors, toggleVerification }: Props) {
+  const [editingDoctor, setEditingDoctor] = useState<any | null>(null)
+  const [showEditModal, setShowEditModal] = useState(false)
 
-  async function toggleVerification(id: string, current: VerificationStatus) {
-    setToggling(id);
-    const next = STATUS_CYCLE[current];
-    await supabase.from("doctor_profiles").update({ verification_status: next }).eq("id", id);
-    setDoctors((prev) =>
-      prev.map((d) => (d.id === id ? { ...d, verification_status: next } : d))
-    );
-    setToggling(null);
-  }
-
-  function verBadge(v: string) {
-    if (v === "verified") return "verified";
-    if (v === "rejected") return "rejected";
-    return "pending";
+  if (!doctors || doctors.length === 0) {
+    return (
+      <div style={{ textAlign: 'center', padding: '64px 0', color: 'var(--text3)', fontFamily: 'DM Sans, sans-serif', fontSize: '14px' }}>
+        No doctors registered yet.
+      </div>
+    )
   }
 
   return (
-    <div className="rounded-xl border border-white/10 overflow-x-auto">
-      <table className="w-full text-sm min-w-[750px]">
-        <thead>
-          <tr className="border-b border-white/10 bg-white/[0.03]">
-            {["Name", "Specialization", "Verification", "Rating", "Exp.", "Languages", "Actions"].map(
-              (h) => (
-                <th
-                  key={h}
-                  className="px-4 py-3 text-left text-white/40 font-medium text-xs uppercase tracking-wider whitespace-nowrap"
-                >
-                  {h}
-                </th>
-              )
-            )}
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-white/5">
-          {loading && (
-            <tr>
-              <td colSpan={7} className="px-4 py-10 text-center text-white/30 text-sm">
-                Loading…
-              </td>
-            </tr>
-          )}
-          {!loading && doctors.length === 0 && (
-            <tr>
-              <td colSpan={7} className="px-4 py-10 text-center text-white/30 text-sm">
-                No doctors yet
-              </td>
-            </tr>
-          )}
-          {doctors.map((doc) => (
-            <tr key={doc.id} className="hover:bg-white/[0.02] transition-colors">
-              <td className="px-4 py-3 text-white font-medium whitespace-nowrap">{doc.full_name}</td>
-              <td className="px-4 py-3 text-white/70 whitespace-nowrap">{doc.specialization}</td>
-              <td className="px-4 py-3 whitespace-nowrap">
-                <Badge
-                  variant={
-                    verBadge(doc.verification_status) as "verified" | "rejected" | "pending"
-                  }
-                >
-                  {doc.verification_status}
-                </Badge>
-              </td>
-              <td className="px-4 py-3 text-white/60 whitespace-nowrap">
-                {doc.rating != null ? doc.rating.toFixed(1) : "—"}
-              </td>
-              <td className="px-4 py-3 text-white/60 whitespace-nowrap">{doc.experience}y</td>
-              <td className="px-4 py-3 text-white/50 whitespace-nowrap">{doc.languages}</td>
-              <td className="px-4 py-3 whitespace-nowrap">
-                <button
-                  onClick={() =>
-                    toggleVerification(doc.id, doc.verification_status as VerificationStatus)
-                  }
-                  disabled={toggling === doc.id}
-                  className="px-3 py-1 rounded-md border border-white/10 text-white/60 text-xs hover:border-[#2B4FD4]/50 hover:text-white transition-colors disabled:opacity-40"
-                >
-                  {toggling === doc.id
-                    ? "Saving…"
-                    : `→ ${STATUS_CYCLE[doc.verification_status as VerificationStatus]}`}
+    <>
+      <div style={{ display: 'grid', gridTemplateColumns: '2fr 1.5fr 1fr 1fr 1fr 1fr 160px', paddingBottom: '8px', borderBottom: '0.5px solid var(--border)', gap: '16px' }}>
+        {['Name', 'Specialization', 'Status', 'Experience', 'Fee', 'Joined', ''].map(h => (
+          <span key={h} style={colStyle}>{h}</span>
+        ))}
+      </div>
+
+      {doctors.map(doctor => {
+        const pill = statusColors[doctor.verification_status] ?? statusColors['pending']
+        return (
+          <div key={doctor.user_id} style={{
+            display: 'grid', gridTemplateColumns: '2fr 1.5fr 1fr 1fr 1fr 1fr 160px',
+            gap: '16px', borderBottom: '0.5px solid var(--border)', alignItems: 'center',
+          }}>
+            <div style={{ padding: '14px 0' }}>
+              <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '13px', color: 'var(--text)', margin: 0 }}>
+                {doctor.profiles?.full_name ?? '—'}
+              </p>
+              <p style={{ fontFamily: 'DM Mono, monospace', fontSize: '10px', color: 'var(--text3)', margin: '2px 0 0' }}>
+                {doctor.profiles?.email ?? '—'}
+              </p>
+            </div>
+
+            <span style={cellStyle}>{doctor.specialization ?? '—'}</span>
+
+            <div style={cellStyle}>
+              <span style={{ fontSize: '10px', padding: '3px 10px', borderRadius: '100px', background: pill.bg, color: pill.color, border: `0.5px solid ${pill.border}` }}>
+                {doctor.verification_status}
+              </span>
+            </div>
+
+            <span style={cellStyle}>{doctor.experience ? `${doctor.experience} yrs` : '—'}</span>
+            <span style={cellStyle}>{doctor.fee ? `${doctor.fee} EGP` : '—'}</span>
+
+            <span style={{ ...cellStyle, fontSize: '11px', color: 'var(--text3)', fontFamily: 'DM Mono, monospace' }}>
+              {doctor.profiles?.created_at
+                ? new Date(doctor.profiles.created_at).toLocaleDateString('en-GB')
+                : '—'}
+            </span>
+
+            <div style={{ padding: '14px 0', display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
+              <button
+                onClick={() => { setEditingDoctor(doctor); setShowEditModal(true) }}
+                style={{
+                  padding: '5px 14px', borderRadius: '5px',
+                  background: 'rgba(107,138,255,0.08)', border: '0.5px solid rgba(107,138,255,0.2)',
+                  color: 'rgba(107,138,255,0.7)', fontSize: '11px',
+                  fontFamily: 'DM Sans, sans-serif', cursor: 'pointer',
+                }}
+              >
+                Edit
+              </button>
+              <form action={toggleVerification}>
+                <input type="hidden" name="userId" value={doctor.user_id} />
+                <input type="hidden" name="current" value={doctor.verification_status} />
+                <button type="submit" style={{
+                  padding: '5px 14px', borderRadius: '5px', fontSize: '11px',
+                  fontFamily: 'DM Sans, sans-serif', cursor: 'pointer',
+                  border: '0.5px solid rgba(255,255,255,0.1)', background: 'transparent',
+                  color: doctor.verification_status === 'verified'
+                    ? 'rgba(255,100,100,0.7)'
+                    : 'rgba(80,200,120,0.7)',
+                }}>
+                  {doctor.verification_status === 'verified' ? 'Revoke' : 'Verify'}
                 </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
+              </form>
+            </div>
+          </div>
+        )
+      })}
+
+      {showEditModal && editingDoctor && (
+        <DoctorEditModal
+          doctor={editingDoctor}
+          colors={colors}
+          onClose={() => { setShowEditModal(false); setEditingDoctor(null) }}
+        />
+      )}
+    </>
+  )
 }

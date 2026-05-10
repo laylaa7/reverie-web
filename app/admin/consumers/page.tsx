@@ -28,37 +28,38 @@ export default async function ConsumersPage() {
 
   // ── Data ──────────────────────────────────────────────────────────────────
 
-  const { data: consumers } = await supabase
+  const { data: allUsers } = await supabase
     .from('profiles')
     .select('id, full_name, email, role, created_at, is_active')
-    .eq('role', 'consumer')
     .order('created_at', { ascending: false })
 
   const { data: consumerProfiles } = await supabase
     .from('consumer_profiles')
     .select('user_id, consumer_type, cognitive_score, onboarding_status, gender, birthdate')
 
-  const merged = consumers?.map(u => ({
+  const merged = allUsers?.map(u => ({
     ...u,
     profile: consumerProfiles?.find(cp => cp.user_id === u.id) ?? null,
   })) ?? []
 
   // ── Summary ───────────────────────────────────────────────────────────────
 
-  const total        = merged.length
-  const patients     = merged.filter(u => u.profile?.consumer_type === 'patient').length
+  const total         = merged.length
+  const patients      = merged.filter(u => u.profile?.consumer_type === 'patient').length
   const entertainment = merged.filter(u => u.profile?.consumer_type === 'entertainment').length
+  const doctors       = merged.filter(u => u.role === 'doctor').length
+  const admins        = merged.filter(u => u.role === 'admin').length
 
   return (
     <div style={{ display: 'flex', background: 'var(--bg)', minHeight: '100vh', fontFamily: 'DM Sans, sans-serif' }}>
       <AdminSidebar currentPath="/admin/consumers" />
 
-      <main style={{ flex: 1, overflow: 'auto', padding: '48px' }}>
+      <main className="admin-main" style={{ flex: 1, overflow: 'auto', padding: '48px' }}>
         <h1 style={{ fontFamily: 'Playfair Display, serif', fontSize: '28px', fontWeight: 700, color: 'var(--text)', margin: '0 0 4px' }}>
-          Consumers
+          Users
         </h1>
         <p style={{ fontFamily: 'DM Mono, monospace', fontSize: '10px', color: 'var(--text3)', letterSpacing: '1px', margin: '0 0 24px' }}>
-          All registered consumer accounts on the platform
+          All registered platform users
         </p>
 
         {/* Summary counts */}
@@ -67,6 +68,8 @@ export default async function ConsumersPage() {
             { label: 'Total', value: total },
             { label: 'Patients', value: patients },
             { label: 'Entertainment', value: entertainment },
+            { label: 'Doctors', value: doctors },
+            { label: 'Admins', value: admins },
           ].map(({ label, value }) => (
             <div key={label} style={{
               fontFamily: 'DM Mono, monospace', fontSize: '10px',
@@ -79,7 +82,7 @@ export default async function ConsumersPage() {
           ))}
         </div>
 
-        <ConsumersTable consumers={merged as any} colors={colors} />
+        <ConsumersTable consumers={merged as any} colors={colors} currentUserId={user.id} />
       </main>
     </div>
   )
