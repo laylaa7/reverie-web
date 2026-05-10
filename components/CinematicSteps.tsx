@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState, useEffect } from "react";
+import { useIsMobile } from "@/hooks/useIsMobile";
 
 const scenes = [
   {
@@ -433,8 +434,10 @@ export function CinematicSteps() {
   const sectionRef = useRef<HTMLElement>(null);
   const [activeScene, setActiveScene] = useState(0);
   const [sceneProgress, setSceneProgress] = useState(0);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
+    if (isMobile) return;
     let raf: number;
     const handleScroll = () => {
       raf = requestAnimationFrame(() => {
@@ -453,16 +456,57 @@ export function CinematicSteps() {
     };
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => { window.removeEventListener("scroll", handleScroll); cancelAnimationFrame(raf); };
-  }, []);
+  }, [isMobile]);
+
+  const keyframes = `
+    @keyframes develop { 0% { opacity: 1; } 100% { opacity: 0; } }
+    @keyframes cursorBlink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+    @keyframes waveformPulse { 0%, 100% { opacity: 0.8; } 50% { opacity: 0.3; } }
+    @keyframes liveDot { 0%, 100% { opacity: 1; } 50% { opacity: 0.2; } }
+  `;
+
+  if (isMobile) {
+    return (
+      <>
+        <style>{keyframes}</style>
+        <section id="how-it-works" style={{ background: "#F7F6F3" }}>
+          {scenes.map((scene, i) => {
+            const Visual = SCENE_VISUALS[i];
+            return (
+              <div key={i} style={{
+                padding: "64px 24px",
+                borderBottom: "0.5px solid rgba(0,0,0,0.06)",
+                textAlign: "center",
+              }}>
+                <p style={{ fontFamily: "var(--font-dm-mono)", fontSize: "9px", letterSpacing: "3px", textTransform: "uppercase", color: "rgba(107,138,255,0.85)", fontWeight: 500, background: "rgba(107,138,255,0.06)", padding: "4px 12px", borderRadius: "100px", display: "inline-block", marginBottom: "18px" }}>
+                  {scene.tag}
+                </p>
+                <h2 style={{ fontFamily: "var(--font-playfair)", fontSize: "clamp(24px, 6vw, 36px)", fontWeight: 700, color: "#080B14", lineHeight: 1.1, margin: "0 0 12px" }}>
+                  {scene.headline}
+                </h2>
+                <p style={{ fontFamily: "var(--font-dm-sans)", fontSize: "14px", fontWeight: 300, color: "rgba(0,0,0,0.45)", lineHeight: 1.75, margin: "0 0 32px" }}>
+                  {scene.sub}
+                </p>
+                <div style={{ width: "100%", borderRadius: "10px", overflow: "hidden", border: "0.5px solid rgba(0,0,0,0.08)" }}>
+                  {i === 3 ? (
+                    <div style={{ background: "#F7F6F3", padding: "32px 24px", display: "flex", justifyContent: "center" }}>
+                      <img src="/vr-headset.png" alt="VR Headset" style={{ width: "100%", maxWidth: "280px", display: "block" }} />
+                    </div>
+                  ) : (
+                    <Visual active={true} sceneProgress={0} />
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </section>
+      </>
+    );
+  }
 
   return (
     <>
-      <style>{`
-        @keyframes develop { 0% { opacity: 1; } 100% { opacity: 0; } }
-        @keyframes cursorBlink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
-        @keyframes waveformPulse { 0%, 100% { opacity: 0.8; } 50% { opacity: 0.3; } }
-        @keyframes liveDot { 0%, 100% { opacity: 1; } 50% { opacity: 0.2; } }
-      `}</style>
+      <style>{keyframes}</style>
 
       <section ref={sectionRef} id="how-it-works" style={{ height: "800vh", position: "relative" }}>
         <div style={{ position: "sticky", top: 0, height: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", background: "#F7F6F3", overflow: "hidden", width: "100%" }}>
