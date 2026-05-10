@@ -3,50 +3,44 @@
 import { useState } from "react";
 import { Navbar } from "@/components/landing/Navbar";
 import { Footer } from "@/components/landing/Footer";
+import { useIsMobile } from "@/hooks/useIsMobile";
 
 const team = [
   {
-    name: "Fady Nabil",
-    role: "Team Lead",
-    description: "Placeholder — replace with your own description.",
-    image: "/team/fady.jpg",
-    linkedin: "https://linkedin.com/in/fady-nabil",
+    name: 'Fady Nabil',
+    role: 'AI Engineer',
+    description: 'Leading the team and driving the technical vision behind ReVerie\'s AI reconstruction pipeline.',
+    image: '/team/fady.jpg',
+    linkedin: 'https://www.linkedin.com/in/fady-n-fouad-412a56292/',
   },
   {
-    name: "Layla Mohamed",
-    role: "AI & Backend",
-    description: "Placeholder — replace with your own description.",
-    image: "/team/layla.JPG",
-    linkedin: "https://linkedin.com/in/layla-mohamed",
+    name: 'Layla Mohamed',
+    role: 'AI Engineer',
+    description: 'Building the intelligence that turns a single photograph into a fully immersive world.',
+    image: '/team/layla.JPG',
+    linkedin: 'https://www.linkedin.com/in/layla-mohamed-a216912b6/',
   },
   {
-    name: "Nour Amgad",
-    role: "Flutter & Mobile",
-    description: "Placeholder — replace with your own description.",
-    image: "/team/nourA.jpg",
-    linkedin: "https://linkedin.com/in/nour-amgad",
+    name: 'Nour Amgad',
+    role: 'AI Engineer',
+    description: 'Developing the models that understand space, depth, and memory from visual input.',
+    image: '/team/nourA.jpg',
+    linkedin: 'https://www.linkedin.com/in/nour-amgad-79424a275/',
   },
   {
-    name: "Nour Bassem",
-    role: "UI/UX Design",
-    description: "Placeholder — replace with your own description.",
-    image: "/team/nourB.jpg",
-    linkedin: "https://linkedin.com/in/nour-bassem",
+    name: 'Nour Bassem',
+    role: 'AI Engineer',
+    description: 'Researching and implementing the cognitive systems that make ReVerie medically meaningful.',
+    image: '/team/nourB.jpg',
+    linkedin: 'https://www.linkedin.com/in/nour-bassem-9403b328a/',
   },
   {
-    name: "Omneya Osama",
-    role: "AI & Research",
-    description: "Placeholder — replace with your own description.",
-    image: "/team/omneya.jpg",
-    linkedin: "https://linkedin.com/in/omneya-osama",
+    name: 'Omneya Osama',
+    role: 'AI Engineer',
+    description: 'Crafting the systems that connect AI output to real therapeutic outcomes for patients and doctors.',
+    image: '/team/omneya.jpg',
+    linkedin: 'https://www.linkedin.com/in/omneya-osama-7448762b6/',
   },
-];
-
-const originParagraphs = [
-  "There was a show. A character had a chip in their brain — and could relive any memory like it was happening again. One of us watched that scene and couldn't let it go.",
-  "Not because of the sci-fi. Because of the question it asked: what if someone who was losing their memories could have them back?",
-  "We looked for something like that. A tool, a platform, anything. We found nothing — not in the region, not anywhere built the way we imagined it.",
-  "So we built ReVerie. For the people who struggle to remember. For the families who struggle to watch. And for anyone who has a place they wish they could go back to.",
 ];
 
 export default function AboutPage() {
@@ -58,41 +52,32 @@ export default function AboutPage() {
           50% { transform: translateX(-50%) translateY(8px); }
         }
         @media (max-width: 768px) {
-          .about-team-row {
-            grid-template-columns: 1fr !important;
+          .about-hero {
+            padding: 80px 24px 60px !important;
           }
-          .about-team-image {
-            min-height: 350px !important;
-            order: 0 !important;
-          }
-          .about-team-text {
-            order: 1 !important;
-            padding: 48px 24px !important;
-          }
-          .about-team-number {
-            display: none !important;
+          .about-closing {
+            padding: 80px 24px !important;
           }
         }
       ` }} />
 
       <Navbar />
 
-      {/* SECTION 1 — Hero */}
+      {/* Hero */}
       <section
+        className="about-hero"
         style={{
-          minHeight: "100vh",
           background: "#080B14",
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
           textAlign: "center",
-          padding: "0 24px",
+          padding: "140px 24px 100px",
           position: "relative",
           overflow: "hidden",
         }}
       >
-        {/* Organic background lines */}
         <svg
           style={{ position: "absolute", inset: 0, width: "100%", height: "100%", pointerEvents: "none" }}
           viewBox="0 0 1440 900"
@@ -108,7 +93,6 @@ export default function AboutPage() {
         </svg>
 
         <div style={{ position: "relative", zIndex: 1 }}>
-          {/* Tag pill */}
           <div style={{ marginBottom: "32px" }}>
             <span style={{
               fontFamily: "var(--font-dm-mono)",
@@ -125,7 +109,6 @@ export default function AboutPage() {
             </span>
           </div>
 
-          {/* Headline */}
           <h1 style={{
             fontFamily: "Playfair Display, serif",
             fontSize: "clamp(36px, 6vw, 72px)",
@@ -134,18 +117,17 @@ export default function AboutPage() {
             lineHeight: 1.05,
             margin: 0,
           }}>
-            We built the thing
+            Five AI engineers.
             <br />
             <em style={{
               fontStyle: "italic",
               fontWeight: 400,
               color: "rgba(255,255,255,0.35)",
             }}>
-              we wished existed.
+              One question worth answering.
             </em>
           </h1>
 
-          {/* Sub */}
           <p style={{
             fontFamily: "var(--font-dm-sans)",
             fontWeight: 300,
@@ -155,60 +137,14 @@ export default function AboutPage() {
             maxWidth: "520px",
             margin: "24px auto 0",
           }}>
-            A graduation project from MIU Egypt.
-            Built like it was going to market —
-            because we believed it should.
+            A graduation project from MIU Egypt, built with the conviction that technology
+            should serve people losing their memories — and the families who love them.
           </p>
-        </div>
-
-        {/* Scroll hint */}
-        <div style={{
-          position: "absolute",
-          bottom: "32px",
-          left: "50%",
-          fontFamily: "var(--font-dm-mono)",
-          fontSize: "12px",
-          color: "rgba(255,255,255,0.15)",
-          animation: "gentleBounce 2s ease-in-out infinite",
-        }}>
-          ↓
         </div>
       </section>
 
-      {/* SECTION 2 — Origin Story */}
-      <section style={{ background: "#F7F6F3", padding: "120px 80px" }}>
-        <div style={{ maxWidth: "680px", margin: "0 auto", textAlign: "center" }}>
-          <p style={{
-            fontFamily: "var(--font-dm-mono)",
-            fontSize: "9px",
-            color: "rgba(0,0,0,0.25)",
-            textTransform: "uppercase",
-            letterSpacing: "2px",
-            marginBottom: "48px",
-          }}>
-            How it started
-          </p>
-          {originParagraphs.map((para, i) => (
-            <p
-              key={i}
-              style={{
-                fontFamily: "Playfair Display, serif",
-                fontSize: "clamp(18px, 2.2vw, 24px)",
-                fontStyle: "italic",
-                fontWeight: 400,
-                color: "rgba(0,0,0,0.65)",
-                lineHeight: 1.8,
-                marginBottom: i < originParagraphs.length - 1 ? "32px" : 0,
-              }}
-            >
-              {para}
-            </p>
-          ))}
-        </div>
-      </section>
-
-      {/* SECTION 3 — Team */}
-      <section style={{ background: "#080B14", padding: "120px 0 0" }}>
+      {/* Team */}
+      <section style={{ background: "#080B14", padding: "0" }}>
         <div style={{ textAlign: "center", marginBottom: "80px", padding: "0 24px" }}>
           <p style={{
             fontFamily: "var(--font-dm-mono)",
@@ -236,12 +172,15 @@ export default function AboutPage() {
         ))}
       </section>
 
-      {/* SECTION 4 — Closing */}
-      <section style={{
-        background: "#F7F6F3",
-        padding: "120px 24px",
-        textAlign: "center",
-      }}>
+      {/* Closing */}
+      <section
+        className="about-closing"
+        style={{
+          background: "#F7F6F3",
+          padding: "120px 24px",
+          textAlign: "center",
+        }}
+      >
         <h2 style={{
           fontFamily: "Playfair Display, serif",
           fontSize: "40px",
@@ -249,7 +188,7 @@ export default function AboutPage() {
           color: "#080B14",
           margin: 0,
         }}>
-          Built with care.
+          Built with conviction.
           <br />
           <em style={{
             fontStyle: "italic",
@@ -266,7 +205,7 @@ export default function AboutPage() {
           color: "rgba(0,0,0,0.4)",
           marginTop: "20px",
         }}>
-          MIU Egypt · Computer Science · Class of 2026
+          MIU Egypt · AI Engineering · Class of 2026
         </p>
         <a
           href="/"
@@ -300,37 +239,38 @@ function TeamRow({
   isEven: boolean;
 }) {
   const [linkHovered, setLinkHovered] = useState(false);
+  const isMobile = useIsMobile();
 
   return (
     <div
-      className="about-team-row"
       style={{
         display: "grid",
-        gridTemplateColumns: "1fr 1fr",
-        minHeight: "500px",
+        gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
+        minHeight: isMobile ? "auto" : "500px",
         borderTop: "0.5px solid rgba(255,255,255,0.06)",
       }}
     >
       {/* Image */}
       <div
-        className="about-team-image"
         style={{
-          order: isEven ? 0 : 1,
+          order: isMobile ? 0 : (isEven ? 0 : 1),
           position: "relative",
+          height: isMobile ? "300px" : "auto",
+          minHeight: isMobile ? "auto" : "500px",
           overflow: "hidden",
-          minHeight: "500px",
         }}
       >
         <img
           src={member.image}
           alt={member.name}
           style={{
-            position: "absolute",
-            inset: 0,
             width: "100%",
             height: "100%",
             objectFit: "cover",
             objectPosition: "center top",
+            display: "block",
+            position: "absolute",
+            inset: 0,
             filter: "grayscale(20%)",
           }}
         />
@@ -338,7 +278,9 @@ function TeamRow({
           style={{
             position: "absolute",
             inset: 0,
-            background: isEven
+            background: isMobile
+              ? "linear-gradient(to top, #080B14 0%, transparent 60%)"
+              : isEven
               ? "linear-gradient(to right, transparent 60%, #080B14)"
               : "linear-gradient(to left, transparent 60%, #080B14)",
           }}
@@ -347,29 +289,29 @@ function TeamRow({
 
       {/* Text */}
       <div
-        className="about-team-text"
         style={{
-          order: isEven ? 1 : 0,
+          order: isMobile ? 1 : (isEven ? 1 : 0),
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
-          padding: "80px",
+          padding: isMobile ? "32px 24px 48px" : "80px",
         }}
       >
-        <p
-          className="about-team-number"
-          style={{
-            fontFamily: "Playfair Display, serif",
-            fontSize: "80px",
-            fontWeight: 700,
-            fontStyle: "italic",
-            color: "rgba(255,255,255,0.04)",
-            margin: "0 0 -20px",
-            lineHeight: 1,
-          }}
-        >
-          0{index + 1}
-        </p>
+        {!isMobile && (
+          <p
+            style={{
+              fontFamily: "Playfair Display, serif",
+              fontSize: "80px",
+              fontWeight: 700,
+              fontStyle: "italic",
+              color: "rgba(255,255,255,0.04)",
+              margin: "0 0 -20px",
+              lineHeight: 1,
+            }}
+          >
+            0{index + 1}
+          </p>
+        )}
 
         <p style={{
           fontFamily: "var(--font-dm-mono)",
@@ -400,7 +342,7 @@ function TeamRow({
           color: "rgba(255,255,255,0.4)",
           lineHeight: 1.8,
           margin: "0 0 32px",
-          maxWidth: "380px",
+          maxWidth: isMobile ? "100%" : "380px",
         }}>
           {member.description}
         </p>
