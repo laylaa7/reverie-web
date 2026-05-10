@@ -1,0 +1,104 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --rv-black: #080B14;
+  --rv-navy: #0A0F1E;
+  --rv-offwhite: #F7F6F3;
+  --rv-white: #FFFFFF;
+  --rv-blue: #2B4FD4;
+  --rv-accent: #6B8AFF;
+  --rv-text-muted-dark: rgba(255, 255, 255, 0.45);
+  --rv-text-muted-light: rgba(0, 0, 0, 0.45);
+
+  --background: 0 0% 100%;
+  --foreground: 222.2 84% 4.9%;
+  --card: 0 0% 100%;
+  --card-foreground: 222.2 84% 4.9%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 222.2 84% 4.9%;
+  --primary: 221.2 83.2% 53.3%;
+  --primary-foreground: 210 40% 98%;
+  --secondary: 210 40% 96.1%;
+  --secondary-foreground: 222.2 47.4% 11.2%;
+  --muted: 210 40% 96.1%;
+  --muted-foreground: 215.4 16.3% 46.9%;
+  --accent: 210 40% 96.1%;
+  --accent-foreground: 222.2 47.4% 11.2%;
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 210 40% 98%;
+  --border: 214.3 31.8% 91.4%;
+  --input: 214.3 31.8% 91.4%;
+  --ring: 221.2 83.2% 53.3%;
+  --radius: 0.5rem;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    font-family: var(--font-dm-sans), system-ui, sans-serif;
+    background-color: var(--rv-black);
+    color: white;
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+@media (max-width: 767px) {
+  .cinematic-dots { display: none !important; }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.85); }
+}
+
+@keyframes scrollDown {
+  0% { transform: translateY(-100%); opacity: 0; }
+  20% { opacity: 1; }
+  80% { opacity: 1; }
+  100% { transform: translateY(200%); opacity: 0; }
+}
+
+/* ── Mobile responsive ─────────────────────────────────────────── */
+@media (max-width: 768px) {
+
+  /* Footer */
+  footer { padding: 48px 24px !important; }
+
+  /* Memory scroll strip cards */
+  .memory-strip > div {
+    width: calc(var(--card-w, 300px) * 0.6) !important;
+    height: calc(var(--card-h, 360px) * 0.6) !important;
+  }
+
+  /* About page team rows */
+  .about-team-row {
+    grid-template-columns: 1fr !important;
+  }
+  .about-team-image {
+    min-height: 350px !important;
+    order: 0 !important;
+  }
+  .about-team-text {
+    order: 1 !important;
+    padding: 48px 24px !important;
+  }
+  .about-team-number {
+    display: none !important;
+  }
+
+  /* How to join */
+  .doctors-join-layout { flex-direction: column !important; }
+  .doctors-join-right  { min-height: 300px !important; flex: none !important; }
+  .doctors-join-left   { padding: 60px 24px !important; }
+
+  /* CinematicSteps visual */
+  #how-it-works .cinematic-visual-wrap {
+    max-width: 100% !important;
+  }
+}
