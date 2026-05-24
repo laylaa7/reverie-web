@@ -30,6 +30,7 @@ const rows: Row[] = [
 export function AudienceEntry() {
   return (
     <section
+      className="audience-section"
       style={{
         background: "#FFFFFF",
         padding: "80px 80px",
@@ -37,6 +38,16 @@ export function AudienceEntry() {
         overflow: "hidden",
       }}
     >
+      <style>{`
+        @media (max-width: 767px) {
+          .audience-section { padding: 60px 24px !important; }
+          .audience-row { flex-direction: column !important; align-items: flex-start !important; gap: 6px !important; padding-top: 16px !important; padding-bottom: 16px !important; }
+          .audience-row-inner { flex-direction: column !important; align-items: flex-start !important; gap: 4px !important; }
+          .audience-tag { min-width: unset !important; }
+          .audience-title { margin-left: 0 !important; font-size: clamp(18px, 5vw, 24px) !important; }
+          .audience-nostalgia { flex-direction: column !important; gap: 12px !important; }
+        }
+      `}</style>
       <OrganicBackground />
 
       {/* Polaroid silhouettes */}
@@ -112,6 +123,7 @@ export function AudienceEntry() {
         ))}
 
         <div
+          className="audience-nostalgia"
           style={{
             marginTop: "48px",
             padding: "20px 24px",
@@ -175,6 +187,7 @@ function AudienceRow({ row, isLast }: { row: Row; isLast: boolean }) {
   return (
     <a
       href={row.href}
+      className="audience-row"
       style={{
         display: "flex",
         alignItems: "center",
@@ -189,8 +202,9 @@ function AudienceRow({ row, isLast }: { row: Row; isLast: boolean }) {
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
-      <div style={{ display: "flex", alignItems: "center" }}>
+      <div className="audience-row-inner" style={{ display: "flex", alignItems: "center" }}>
         <span
+          className="audience-tag"
           style={{
             fontFamily: "var(--font-dm-sans)",
             fontWeight: 400,
@@ -205,6 +219,7 @@ function AudienceRow({ row, isLast }: { row: Row; isLast: boolean }) {
           {row.tag}
         </span>
         <span
+          className="audience-title"
           style={{
             fontFamily: "var(--font-playfair)",
             fontWeight: 400,

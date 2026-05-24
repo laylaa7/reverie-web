@@ -18,7 +18,12 @@ const paragraphs = [
 
 export function OurStory() {
   return (
-    <section id="story" style={{ background: "var(--rv-black)", padding: "120px 80px" }}>
+    <section id="story" className="our-story-section" style={{ background: "var(--rv-black)", padding: "120px 80px" }}>
+      <style>{`
+        @media (max-width: 767px) {
+          .our-story-section { padding: 80px 24px !important; }
+        }
+      `}</style>
       <div style={{ maxWidth: "640px", margin: "0 auto" }}>
         <p
           style={{

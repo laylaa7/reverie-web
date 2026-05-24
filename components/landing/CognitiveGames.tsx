@@ -75,7 +75,7 @@ export function CognitiveGames() {
               style={{
                 fontFamily: "var(--font-playfair)",
                 fontWeight: 700,
-                fontSize: "40px",
+                fontSize: "clamp(28px, 7vw, 40px)",
                 color: "#080B14",
                 margin: 0,
               }}

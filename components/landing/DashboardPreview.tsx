@@ -17,7 +17,7 @@ export function DashboardPreview() {
         </div>
 
         {/* Phone frame — centered */}
-        <div className="relative">
+        <div className="relative w-full max-w-[290px]">
           {/* Soft blue glow */}
           <div
             className="absolute inset-0 rounded-[44px] pointer-events-none"
@@ -26,7 +26,7 @@ export function DashboardPreview() {
 
           {/* Phone */}
           <div
-            className="relative w-[290px] rounded-[44px] border border-[#e2e8f0] bg-[#f8faff] overflow-hidden"
+            className="relative w-full rounded-[44px] border border-[#e2e8f0] bg-[#f8faff] overflow-hidden"
             style={{ boxShadow: "0 4px 32px rgba(10,15,30,0.10), 0 1px 3px rgba(10,15,30,0.08)" }}
           >
             {/* Notch */}

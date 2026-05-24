@@ -101,4 +101,31 @@
   #how-it-works .cinematic-visual-wrap {
     max-width: 100% !important;
   }
+
+  /* Caregivers — left column unconstrained when stacked */
+  .caregivers-inner > div:first-child {
+    flex: none !important;
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+
+  /* Navbar — tighter horizontal padding on small screens */
+  nav > div {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Extra-small screens: reduce section paddings further */
+  .how-it-works-section { padding: 48px 16px !important; }
+  .our-story-section { padding: 60px 16px !important; }
+  .audience-section { padding: 48px 16px !important; }
+  .entertainment-section { padding: 48px 16px !important; }
+  .games-section { padding: 48px 16px !important; }
+  .caregivers-inner { padding: 48px 16px !important; }
+  .doctors-header { padding: 48px 16px 0 !important; }
+  .doctors-clinics { padding: 32px 16px !important; }
+  .doctors-join-left { padding: 48px 16px !important; }
+  footer { padding: 40px 16px !important; }
 }

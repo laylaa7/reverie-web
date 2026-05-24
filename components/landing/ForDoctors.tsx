@@ -76,7 +76,7 @@ export function ForDoctors() {
           style={{
             fontFamily: "var(--font-playfair)",
             fontWeight: 700,
-            fontSize: "40px",
+            fontSize: "clamp(28px, 5vw, 40px)",
             color: "#080B14",
             margin: "0 0 16px 0",
           }}
@@ -358,6 +358,7 @@ function FeatureRow({ num, title, desc }: { num: string; title: string; desc: st
 
   return (
     <div
+      className="doctors-feature-row"
       style={{
         display: "flex",
         alignItems: "flex-start",
@@ -376,6 +377,7 @@ function FeatureRow({ num, title, desc }: { num: string; title: string; desc: st
       onMouseLeave={() => setHovered(false)}
     >
       <div
+        className="doctors-feature-num"
         style={{
           fontFamily: "var(--font-playfair)",
           fontSize: "56px",

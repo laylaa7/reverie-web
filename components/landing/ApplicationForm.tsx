@@ -67,7 +67,7 @@ export function ApplicationForm() {
           style={{
             fontFamily: "var(--font-playfair)",
             fontWeight: 700,
-            fontSize: "40px",
+            fontSize: "clamp(28px, 8vw, 40px)",
             color: "#080B14",
             margin: "0 0 12px 0",
           }}

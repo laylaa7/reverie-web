@@ -4,17 +4,17 @@ const scenes = [
   {
     title: "Under northern skies",
     caption: "Where silence felt alive.",
-    image: "/Foreveryone/IMG_7345.JPG",
+    image: "/foreveryone/IMG_7345.JPG",
   },
   {
     title: "The places that changed me",
     caption: "Some moments stay forever.",
-    image: "/Foreveryone/IMG_7346.JPG",
+    image: "/foreveryone/IMG_7346.JPG",
   },
   {
     title: "Above the clouds",
     caption: "Cold air, clear minds",
-    image: "/Foreveryone/IMG_7347.JPG",
+    image: "/foreveryone/IMG_7347.JPG",
   },
 ];
 
@@ -44,7 +44,7 @@ export function Entertainment() {
         style={{
           fontFamily: "var(--font-playfair)",
           fontWeight: 700,
-          fontSize: "40px",
+          fontSize: "clamp(28px, 7vw, 40px)",
           color: "white",
           margin: "0 0 16px 0",
         }}

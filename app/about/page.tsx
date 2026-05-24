@@ -145,7 +145,7 @@ export default function AboutPage() {
 
       {/* Team */}
       <section style={{ background: "#080B14", padding: "0" }}>
-        <div style={{ textAlign: "center", marginBottom: "80px", padding: "0 24px" }}>
+        <div style={{ textAlign: "center", marginBottom: "80px", padding: "0 24px", boxSizing: "border-box" }}>
           <p style={{
             fontFamily: "var(--font-dm-mono)",
             fontSize: "9px",
@@ -158,7 +158,7 @@ export default function AboutPage() {
           </p>
           <h2 style={{
             fontFamily: "Playfair Display, serif",
-            fontSize: "48px",
+            fontSize: "clamp(32px, 7vw, 48px)",
             fontWeight: 700,
             color: "white",
             margin: 0,

@@ -32,6 +32,7 @@ export function HowItWorks() {
   return (
     <section
       id="how-it-works"
+      className="how-it-works-section"
       style={{
         background: "var(--rv-offwhite)",
         padding: "100px 80px",
@@ -39,6 +40,13 @@ export function HowItWorks() {
         overflow: "hidden",
       }}
     >
+      <style>{`
+        @media (max-width: 767px) {
+          .how-it-works-section { padding: 60px 24px !important; }
+          .how-it-works-step { gap: 20px !important; }
+          .how-it-works-num { font-size: 36px !important; width: 48px !important; }
+        }
+      `}</style>
       <OrganicBackground />
 
       <div style={{ position: "relative", zIndex: 1 }}>
@@ -71,6 +79,7 @@ export function HowItWorks() {
           {steps.map((step, i) => (
             <div
               key={step.number}
+              className="how-it-works-step"
               style={{
                 display: "flex",
                 alignItems: "flex-start",
@@ -80,6 +89,7 @@ export function HowItWorks() {
               }}
             >
               <span
+                className="how-it-works-num"
                 style={{
                   fontFamily: "var(--font-playfair)",
                   fontStyle: "italic",
