@@ -1,19 +1,31 @@
 import nodemailer from 'nodemailer'
-import { createClient } from '@supabase/supabase-js'
+import { requireAdmin } from '@/lib/admin-auth'
 import { NextResponse } from 'next/server'
 
 export async function POST(req: Request) {
   const { applicationId, email, name, specialization, calendlyLink } = await req.json()
+  const { supabase, error: adminError } = await requireAdmin()
+  if (adminError) return adminError
 
-  const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-  )
+  if (!applicationId || !email || !name || !calendlyLink) {
+    return NextResponse.json({ error: 'applicationId, email, name, and calendlyLink are required.' }, { status: 400 })
+  }
 
-  await supabase
+  const { data: application, error: applicationError } = await supabase
     .from('doctor_applications')
     .update({ status: 'approved', reviewed_at: new Date().toISOString() })
     .eq('id', applicationId)
+    .eq('status', 'pending')
+    .select('id')
+    .maybeSingle()
+
+  if (applicationError) {
+    return NextResponse.json({ error: applicationError.message }, { status: 500 })
+  }
+
+  if (!application) {
+    return NextResponse.json({ error: 'Pending application not found.' }, { status: 404 })
+  }
 
   const transporter = nodemailer.createTransport({
     service: 'gmail',

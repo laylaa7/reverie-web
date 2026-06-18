@@ -39,6 +39,8 @@ export default function ApplicationsTable({ applications, colors, calendlyUrl }:
   const [sending, setSending] = useState(false)
   const [sent, setSent] = useState(false)
   const [createSent, setCreateSent] = useState(false)
+  const [createDoctorCode, setCreateDoctorCode] = useState('')
+  const [createError, setCreateError] = useState('')
   const [hoveredBio, setHoveredBio] = useState<string | null>(null)
 
   const filtered = filter === 'all'
@@ -119,6 +121,9 @@ export default function ApplicationsTable({ applications, colors, calendlyUrl }:
   async function handleCreateAccount() {
     if (!selectedApp) return
     setSending(true)
+    setCreateError('')
+    setCreateDoctorCode('')
+    setCreateSent(false)
     try {
       const res = await fetch('/api/admin/create-doctor', {
         method: 'POST',
@@ -132,14 +137,19 @@ export default function ApplicationsTable({ applications, colors, calendlyUrl }:
           languages: selectedApp.languages,
         }),
       })
+      const json = await res.json().catch(() => ({}))
       if (res.ok) {
+        setCreateDoctorCode(json.doctorCode ?? '')
         setCreateSent(true)
         setTimeout(() => {
           setShowCreateModal(false)
           setCreateSent(false)
+          setCreateDoctorCode('')
           setSelectedApp(null)
           window.location.reload()
-        }, 2000)
+        }, 5000)
+      } else {
+        setCreateError(json.error || 'Failed to create doctor account.')
       }
     } finally {
       setSending(false)
@@ -307,7 +317,7 @@ export default function ApplicationsTable({ applications, colors, calendlyUrl }:
 
               {(app.status === 'approved' || app.status === 'call_scheduled') && (
                 <button
-                  onClick={() => { setSelectedApp(app); setShowCreateModal(true) }}
+                  onClick={() => { setSelectedApp(app); setCreateDoctorCode(''); setCreateError(''); setShowCreateModal(true) }}
                   style={{
                     padding: '7px 16px', borderRadius: '6px',
                     background: 'rgba(107,138,255,0.1)', border: '0.5px solid rgba(107,138,255,0.3)',
@@ -439,7 +449,7 @@ export default function ApplicationsTable({ applications, colors, calendlyUrl }:
       {/* ── Create Account Modal ──────────────────────────────────────────── */}
       {showCreateModal && selectedApp && (
         <div
-          onClick={e => { if (e.target === e.currentTarget) setShowCreateModal(false) }}
+          onClick={e => { if (e.target === e.currentTarget) { setShowCreateModal(false); setCreateDoctorCode(''); setCreateError('') } }}
           style={{
             position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.75)',
             backdropFilter: 'blur(4px)', zIndex: 100,
@@ -468,26 +478,43 @@ export default function ApplicationsTable({ applications, colors, calendlyUrl }:
             </div>
 
             <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '12px', color: 'rgba(255,255,255,0.3)', margin: '0 0 24px', lineHeight: 1.6 }}>
-              This will create a Supabase auth account, set up their doctor profile as verified, and send login credentials to their email.
+              This will create a Supabase auth account, set up their doctor profile as pending, and send login credentials plus their doctor code to their email.
             </p>
+
+            {createDoctorCode && (
+              <div style={{ background: 'rgba(80,200,120,0.08)', border: '0.5px solid rgba(80,200,120,0.25)', borderRadius: '8px', padding: '14px 16px', marginBottom: '18px' }}>
+                <span style={{ display: 'block', fontFamily: 'DM Mono, monospace', fontSize: '8px', letterSpacing: '1.5px', textTransform: 'uppercase', color: 'rgba(80,200,120,0.7)', marginBottom: '6px' }}>
+                  Doctor Code
+                </span>
+                <span style={{ fontFamily: 'DM Mono, monospace', fontSize: '16px', color: 'rgba(255,255,255,0.9)' }}>
+                  {createDoctorCode}
+                </span>
+              </div>
+            )}
+
+            {createError && (
+              <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '12px', color: 'rgba(255,100,100,0.85)', margin: '0 0 18px', lineHeight: 1.5 }}>
+                {createError}
+              </p>
+            )}
 
             <div style={{ display: 'flex', gap: '10px' }}>
               <button
-                onClick={() => setShowCreateModal(false)}
+                onClick={() => { setShowCreateModal(false); setCreateDoctorCode(''); setCreateError('') }}
                 style={{ flex: 1, padding: '11px', borderRadius: '6px', background: 'transparent', border: '0.5px solid rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.4)', fontSize: '13px', fontFamily: 'DM Sans, sans-serif', cursor: 'pointer' }}
               >
                 Cancel
               </button>
               <button
                 onClick={handleCreateAccount}
-                disabled={sending}
+                disabled={sending || createSent}
                 style={{
                   flex: 2, padding: '11px', borderRadius: '6px',
                   background: createSent ? 'rgba(80,200,120,0.2)' : '#2B4FD4',
                   border: createSent ? '0.5px solid rgba(80,200,120,0.4)' : 'none',
                   color: createSent ? 'rgba(80,200,120,0.9)' : '#fff',
                   fontSize: '13px', fontWeight: 500, fontFamily: 'DM Sans, sans-serif',
-                  cursor: sending ? 'not-allowed' : 'pointer',
+                  cursor: sending || createSent ? 'not-allowed' : 'pointer',
                 }}
               >
                 {createSent ? '✓ Account created' : sending ? 'Creating...' : 'Create Account & Send Credentials →'}

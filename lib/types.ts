@@ -20,7 +20,7 @@ export interface DoctorProfile {
   experience: number;
   languages: string;
   bio: string;
-  verification_status: "pending" | "verified" | "rejected";
+  verification_status: "pending" | "approved" | "rejected";
   rating: number | null;
   created_at: string;
 }

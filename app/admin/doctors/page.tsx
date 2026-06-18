@@ -49,7 +49,7 @@ export default async function DoctorsPage() {
     'use server'
     const userId = formData.get('userId') as string
     const current = formData.get('current') as string
-    const next = current === 'verified' ? 'pending' : 'verified'
+    const next = current === 'approved' ? 'pending' : 'approved'
 
     const sb = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -65,7 +65,7 @@ export default async function DoctorsPage() {
   // ── Helpers ───────────────────────────────────────────────────────────────
 
   const total    = doctors?.length ?? 0
-  const verified = doctors?.filter(d => d.verification_status === 'verified').length ?? 0
+  const approved = doctors?.filter(d => d.verification_status === 'approved').length ?? 0
   const pending  = doctors?.filter(d => d.verification_status === 'pending').length ?? 0
 
   return (
@@ -85,7 +85,7 @@ export default async function DoctorsPage() {
         <div style={{ display: 'flex', gap: '12px', marginBottom: '32px' }}>
           {[
             { label: 'Total', value: total },
-            { label: 'Verified', value: verified },
+            { label: 'Approved', value: approved },
             { label: 'Pending', value: pending },
           ].map(({ label, value }) => (
             <div key={label} style={{

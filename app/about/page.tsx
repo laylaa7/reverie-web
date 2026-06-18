@@ -1,17 +1,30 @@
 "use client";
 
-import { useState } from "react";
 import { Navbar } from "@/components/landing/Navbar";
 import { Footer } from "@/components/landing/Footer";
 import { useIsMobile } from "@/hooks/useIsMobile";
 
-const team = [
+type TeamMember = {
+  name: string;
+  role: string;
+  description: string;
+  image: string;
+  linkedin: string;
+  email: string;
+  phone: string;
+  cv: string;
+};
+
+const team: TeamMember[] = [
   {
     name: 'Fady Nabil',
     role: 'AI Engineer',
     description: 'Leading the team and driving the technical vision behind ReVerie\'s AI reconstruction pipeline.',
     image: '/team/fady.jpg',
     linkedin: 'https://www.linkedin.com/in/fady-n-fouad-412a56292/',
+    email: 'fadynf05@gmail.com',
+    phone: '+201226773371',
+    cv: '/cvs/Fady-Nabil-CV.pdf',
   },
   {
     name: 'Layla Mohamed',
@@ -19,6 +32,9 @@ const team = [
     description: 'Building the intelligence that turns a single photograph into a fully immersive world.',
     image: '/team/layla.JPG',
     linkedin: 'https://www.linkedin.com/in/layla-mohamed-a216912b6/',
+    email: 'laylamuhamed15@gmail.com',
+    phone: '+201128300501',
+    cv: '/cvs/Layla-Mohamed-CV.pdf',
   },
   {
     name: 'Nour Amgad',
@@ -26,6 +42,9 @@ const team = [
     description: 'Developing the models that understand space, depth, and memory from visual input.',
     image: '/team/nourA.jpg',
     linkedin: 'https://www.linkedin.com/in/nour-amgad-79424a275/',
+    email: 'nouramgad05@gmail.com',
+    phone: '+201115071166',
+    cv: '/cvs/Nour-Amgad-CV.pdf',
   },
   {
     name: 'Nour Bassem',
@@ -33,6 +52,9 @@ const team = [
     description: 'Researching and implementing the cognitive systems that make ReVerie medically meaningful.',
     image: '/team/nourB.jpg',
     linkedin: 'https://www.linkedin.com/in/nour-bassem-9403b328a/',
+    email: 'nourbassem2004@gmail.com',
+    phone: '+201115565612',
+    cv: '/cvs/Nour-Bassem-CV.pdf',
   },
   {
     name: 'Omneya Osama',
@@ -40,6 +62,9 @@ const team = [
     description: 'Crafting the systems that connect AI output to real therapeutic outcomes for patients and doctors.',
     image: '/team/omneya.jpg',
     linkedin: 'https://www.linkedin.com/in/omneya-osama-7448762b6/',
+    email: 'omnia.osamahassan@gmail.com',
+    phone: '+201152778815',
+    cv: '/cvs/Omneya-Osama-CV.pdf',
   },
 ];
 
@@ -58,6 +83,13 @@ export default function AboutPage() {
           .about-closing {
             padding: 80px 24px !important;
           }
+        }
+        .about-action-link:hover {
+          color: #F7F6F3 !important;
+        }
+        .about-action-row {
+          position: relative;
+          z-index: 2;
         }
       ` }} />
 
@@ -234,12 +266,30 @@ function TeamRow({
   index,
   isEven,
 }: {
-  member: typeof team[0];
+  member: TeamMember;
   index: number;
   isEven: boolean;
 }) {
-  const [linkHovered, setLinkHovered] = useState(false);
   const isMobile = useIsMobile();
+  const actionLinkStyle = {
+    display: "inline-flex",
+    alignItems: "center",
+    color: "rgba(247,246,243,0.62)",
+    textDecoration: "none",
+    fontFamily: "var(--font-dm-mono)",
+    fontSize: 12,
+    letterSpacing: "0.18em",
+    textTransform: "uppercase",
+    transition: "color 0.25s ease, opacity 0.25s ease",
+    border: "none",
+    outline: "none",
+    background: "transparent",
+    padding: 0,
+  } as const;
+  const separatorStyle = {
+    color: "rgba(247,246,243,0.22)",
+    fontSize: 11,
+  } as const;
 
   return (
     <div
@@ -347,31 +397,32 @@ function TeamRow({
           {member.description}
         </p>
 
-        <a
-          href={member.linkedin}
-          target="_blank"
-          rel="noopener noreferrer"
+        <div
+          className="about-action-row"
           style={{
-            display: "inline-flex",
+            display: "flex",
             alignItems: "center",
-            gap: "8px",
-            color: linkHovered ? "#fff" : "rgba(255,255,255,0.25)",
-            textDecoration: "none",
-            fontFamily: "var(--font-dm-mono)",
-            fontSize: "10px",
-            letterSpacing: "1px",
-            textTransform: "uppercase",
-            transition: "color 0.2s",
-            width: "fit-content",
+            flexWrap: "wrap",
+            gap: 14,
+            marginTop: 34,
           }}
-          onMouseEnter={() => setLinkHovered(true)}
-          onMouseLeave={() => setLinkHovered(false)}
         >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
-          </svg>
-          LinkedIn
-        </a>
+          <a className="about-action-link" href={member.linkedin} target="_blank" rel="noopener noreferrer" style={actionLinkStyle}>
+            LinkedIn
+          </a>
+          <span style={separatorStyle}>•</span>
+          <a className="about-action-link" href={`mailto:${member.email}`} style={actionLinkStyle}>
+            Email
+          </a>
+          <span style={separatorStyle}>•</span>
+          <a className="about-action-link" href={`tel:${member.phone}`} style={actionLinkStyle}>
+            Phone
+          </a>
+          <span style={separatorStyle}>•</span>
+          <a className="about-action-link" href={member.cv} target="_blank" rel="noopener noreferrer" style={actionLinkStyle}>
+            CV
+          </a>
+        </div>
       </div>
     </div>
   );

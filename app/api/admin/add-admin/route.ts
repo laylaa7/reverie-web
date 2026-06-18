@@ -1,7 +1,10 @@
-import { createClient } from '@supabase/supabase-js'
+import { requireAdmin } from '@/lib/admin-auth'
 import { NextResponse } from 'next/server'
 
 export async function POST(req: Request) {
+  const { supabase, error: adminError } = await requireAdmin()
+  if (adminError) return adminError
+
   const { fullName, email, password } = await req.json()
 
   if (!fullName || !email || !password) {
@@ -11,11 +14,6 @@ export async function POST(req: Request) {
   if (password.length < 8) {
     return NextResponse.json({ error: 'Password must be at least 8 characters.' }, { status: 400 })
   }
-
-  const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-  )
 
   const { data: existing } = await supabase
     .from('profiles')

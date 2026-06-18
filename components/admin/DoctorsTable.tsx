@@ -5,7 +5,7 @@ import DoctorEditModal from './DoctorEditModal'
 
 const statusColors: Record<string, { bg: string; color: string; border: string }> = {
   pending:  { bg: 'rgba(232,160,48,0.1)',  color: 'rgba(232,160,48,0.8)',  border: 'rgba(232,160,48,0.2)' },
-  verified: { bg: 'rgba(80,200,120,0.1)',  color: 'rgba(80,200,120,0.8)',  border: 'rgba(80,200,120,0.2)' },
+  approved: { bg: 'rgba(80,200,120,0.1)',  color: 'rgba(80,200,120,0.8)',  border: 'rgba(80,200,120,0.2)' },
   rejected: { bg: 'rgba(255,100,100,0.1)', color: 'rgba(255,100,100,0.8)', border: 'rgba(255,100,100,0.2)' },
 }
 
@@ -97,11 +97,11 @@ export default function DoctorsTable({ doctors, colors, toggleVerification }: Pr
                   padding: '5px 14px', borderRadius: '5px', fontSize: '11px',
                   fontFamily: 'DM Sans, sans-serif', cursor: 'pointer',
                   border: '0.5px solid rgba(255,255,255,0.1)', background: 'transparent',
-                  color: doctor.verification_status === 'verified'
+                  color: doctor.verification_status === 'approved'
                     ? 'rgba(255,100,100,0.7)'
                     : 'rgba(80,200,120,0.7)',
                 }}>
-                  {doctor.verification_status === 'verified' ? 'Revoke' : 'Verify'}
+                  {doctor.verification_status === 'approved' ? 'Revoke' : 'Approve'}
                 </button>
               </form>
             </div>

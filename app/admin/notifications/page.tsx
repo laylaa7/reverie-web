@@ -2,6 +2,7 @@ import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { createClient } from '@supabase/supabase-js'
 import AdminSidebar from '@/components/admin/AdminSidebar'
+import { requireAdmin } from '@/lib/admin-auth'
 
 const colors = {
   bg: 'var(--bg)', card: 'var(--card)', border: 'var(--border)',
@@ -82,10 +83,38 @@ async function sendNotification(formData: FormData) {
   redirect(`/admin/notifications?success=${userIds.length}`)
 }
 
+async function deleteNotificationBroadcast(formData: FormData) {
+  'use server'
+
+  const ids = formData
+    .getAll('notificationIds')
+    .map(id => String(id))
+    .filter(Boolean)
+
+  if (ids.length === 0) {
+    redirect('/admin/notifications?error=delete')
+  }
+
+  const { supabase, error: adminError } = await requireAdmin()
+  if (adminError) redirect('/admin/login?error=access')
+
+  const { error } = await supabase
+    .from('notifications')
+    .delete()
+    .in('id', ids)
+
+  if (error) {
+    console.error('Notification delete error:', error)
+    redirect('/admin/notifications?error=delete')
+  }
+
+  redirect(`/admin/notifications?deleted=${ids.length}`)
+}
+
 export default async function NotificationsPage({
   searchParams,
 }: {
-  searchParams: { success?: string; error?: string }
+  searchParams: { success?: string; deleted?: string; error?: string }
 }) {
   const cookieStore = cookies()
   const token = cookieStore.get('reverie-admin-session')
@@ -107,27 +136,31 @@ export default async function NotificationsPage({
 
   const { data: notifRows } = await supabase
     .from('notifications')
-    .select('title, body, created_at, user_id')
+    .select('id, title, body, created_at, user_id')
     .order('created_at', { ascending: false })
     .limit(500)
 
   // Group rows into broadcast events (same title+body within the same minute)
-  const broadcastMap = new Map<string, { title: string; body: string; created_at: string; count: number }>()
+  const broadcastMap = new Map<string, { title: string; body: string; created_at: string; count: number; ids: string[] }>()
   for (const row of (notifRows ?? [])) {
     const bucket = Math.floor(new Date(row.created_at).getTime() / 60000)
-    const key = `${row.title}::${bucket}`
+    const key = `${row.title}::${row.body}::${bucket}`
     if (!broadcastMap.has(key)) {
-      broadcastMap.set(key, { title: row.title, body: row.body, created_at: row.created_at, count: 0 })
+      broadcastMap.set(key, { title: row.title, body: row.body, created_at: row.created_at, count: 0, ids: [] })
     }
-    broadcastMap.get(key)!.count++
+    const broadcast = broadcastMap.get(key)!
+    broadcast.count++
+    broadcast.ids.push(row.id)
   }
   const broadcasts = Array.from(broadcastMap.values())
 
   const successCount = searchParams.success
+  const deletedCount = searchParams.deleted
   const errorMsg =
     searchParams.error === 'missing'   ? 'Title and message are required.'
     : searchParams.error === 'nousers' ? 'No users found for this target.'
     : searchParams.error === 'insert'  ? 'Failed to save notifications. Try again.'
+    : searchParams.error === 'delete'  ? 'Failed to delete notifications. Try again.'
     : null
 
   return (
@@ -161,6 +194,21 @@ export default async function NotificationsPage({
                 color: 'rgba(80,200,120,0.9)',
               }}>
                 ✓ Notification sent to {successCount} users.
+              </div>
+            )}
+
+            {deletedCount && (
+              <div style={{
+                background: 'rgba(80,200,120,0.08)',
+                border: '0.5px solid rgba(80,200,120,0.2)',
+                borderRadius: '6px',
+                padding: '12px 16px',
+                marginBottom: '20px',
+                fontFamily: 'DM Sans, sans-serif',
+                fontSize: '13px',
+                color: 'rgba(80,200,120,0.9)',
+              }}>
+                ✓ Deleted {deletedCount} notification{deletedCount !== '1' ? 's' : ''}.
               </div>
             )}
 
@@ -391,6 +439,26 @@ export default async function NotificationsPage({
                       {new Date(b.created_at).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}
                     </p>
                   </div>
+                  <form action={deleteNotificationBroadcast}>
+                    {b.ids.map(id => (
+                      <input key={id} type="hidden" name="notificationIds" value={id} />
+                    ))}
+                    <button
+                      type="submit"
+                      style={{
+                        padding: '6px 12px',
+                        borderRadius: '5px',
+                        background: 'rgba(255,100,100,0.08)',
+                        border: '0.5px solid rgba(255,100,100,0.25)',
+                        color: 'rgba(255,100,100,0.8)',
+                        fontSize: '11px',
+                        fontFamily: 'DM Sans, sans-serif',
+                        cursor: 'pointer',
+                      }}
+                    >
+                      Delete
+                    </button>
+                  </form>
                 </div>
               ))}
             </div>

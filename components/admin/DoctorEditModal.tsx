@@ -101,7 +101,7 @@ export default function DoctorEditModal({ doctor, colors, onClose }: Props) {
 
   const statusColors: Record<string, string> = {
     pending: 'rgba(232,160,48,0.8)',
-    verified: 'rgba(80,200,120,0.8)',
+    approved: 'rgba(80,200,120,0.8)',
     rejected: 'rgba(255,100,100,0.8)',
   }
 
@@ -190,7 +190,7 @@ export default function DoctorEditModal({ doctor, colors, onClose }: Props) {
               onChange={e => set('verification_status', e.target.value)}
             >
               <option value="pending">Pending</option>
-              <option value="verified">Verified</option>
+              <option value="approved">Approved</option>
               <option value="rejected">Rejected</option>
             </select>
           </div>

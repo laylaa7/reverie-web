@@ -1,30 +1,9 @@
-import { createClient, createServiceClient } from "@/lib/supabase/server";
+import { requireAdmin } from "@/lib/admin-auth";
 import { NextResponse } from "next/server";
 
 export async function GET() {
-  // Verify session via anon client
-  const authClient = createClient();
-  const {
-    data: { user },
-  } = await authClient.auth.getUser();
-
-  if (!user) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
-  // All data queries via service role
-  const supabase = createServiceClient();
-
-  // Verify admin role
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("role")
-    .eq("id", user.id)
-    .single();
-
-  if (profile?.role !== "admin") {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-  }
+  const { supabase, error: adminError } = await requireAdmin();
+  if (adminError) return adminError;
 
   const [
     { count: totalDoctors },
