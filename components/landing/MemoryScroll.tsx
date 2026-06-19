@@ -12,6 +12,11 @@ const memories: Memory[] = [
   { title: "The street we grew up on", location: "Heliopolis · 2000", width: 340, height: 400, rotate: 2.1, image: "/memoryscroll/memory4.jpg" },
   { title: "laughs", location: "Cairo · 2006", width: 260, height: 300, rotate: -1.8,image: "/memoryscroll/memory5.jpg"},
   { title: "first group trip", location: "siwa", width: 200, height: 240, rotate: 1.4, image: "/memoryscroll/memory6.jpg" },
+  { title: "first win", location: "Cairo · 2007", width: 200, height: 240, rotate: 1.4, image: "/memoryscroll/memory7.jpg" },
+  { title: "Childhood Chaos", location: "Summer Evenings", width: 200, height: 240, rotate: 1.4, image: "/memoryscroll/memory8.jpg" },
+  { title: "Her Second Birthday", location: "Childhood Home", width: 200, height: 240, rotate: 1.4, image: "/memoryscroll/memory9.jpg" },
+  { title: "Their First Trip", location: "Playground Nights", width: 200, height: 240, rotate: 1.4, image: "/memoryscroll/memory10.jpg" },
+  { title: "His first Christmas", location: "Childhood Home", width: 200, height: 240, rotate: 1.4, image: "/memoryscroll/memory11.jpg" },
 ];
 
 export function MemoryScroll() {
