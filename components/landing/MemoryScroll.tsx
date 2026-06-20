@@ -17,6 +17,8 @@ const memories: Memory[] = [
   { title: "Her Second Birthday", location: "Childhood Home", width: 200, height: 240, rotate: 1.4, image: "/memoryscroll/memory9.jpg" },
   { title: "Their First Trip", location: "Playground Nights", width: 200, height: 240, rotate: 1.4, image: "/memoryscroll/memory10.jpg" },
   { title: "His first Christmas", location: "Childhood Home", width: 200, height: 240, rotate: 1.4, image: "/memoryscroll/memory11.jpg" },
+  { title: "Playground Memories", location: "Precious Moments", width: 200, height: 240, rotate: 1.4, image: "/memoryscroll/memory12.jpg" },
+  { title: "Childhood Joy", location: "Childhood Home", width: 200, height: 240, rotate: 1.4, image: "/memoryscroll/memory13.jpg" }
 ];
 
 export function MemoryScroll() {
